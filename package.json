@@ -4,29 +4,56 @@
   "description": "Small demo app to showcase the simplicity of integrating SPACE",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "concurrently \"vite\" \"tailwindcss -i ./src/static/css/app.css -o ./src/static/css/tailwind.css --watch\"",
     "build": "tsc && vite build",
-    "lint": "tsc --noEmit",
-    "preview": "vite preview"
+    "lint": "tsc --noEmit"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Alejandro García Fernández",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Alex-GF/space-demo.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Alex-GF/space-demo/issues"
+  },
+  "homepage": "https://github.com/Alex-GF/space-demo#readme",
   "dependencies": {
-    "framer-motion": "^12.23.21",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "@faker-js/faker": "^9.8.0",
+    "@iconify/react": "^5.0.2",
+    "@types/prop-types": "^15.7.13",
+    "@types/react-helmet": "^6.1.11",
+    "date-fns": "^4.1.0",
+    "dotenv": "^16.4.5",
+    "framer-motion": "^12.12.2",
+    "helmet": "^8.0.0",
+    "prop-types": "^15.8.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-helmet": "^6.1.0",
+    "react-icons": "^5.3.0",
+    "react-svg": "^16.1.34",
+    "space-react-client": "^0.2.3",
+    "tsc-alias": "1.8.16"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.13",
-    "@types/node": "^24.5.2",
-    "@types/react": "^19.1.13",
-    "@types/react-dom": "^19.1.9",
-    "@vitejs/plugin-react": "^5.0.3",
-    "autoprefixer": "^10.4.21",
-    "postcss": "^8.5.6",
-    "tailwindcss": "^4.1.13",
-    "typescript": "^5.9.2",
-    "vite": "^7.1.7"
+    "@eslint/js": "^9.11.1",
+    "@types/react": "^18.3.10",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.2",
+    "concurrently": "^9.1.2",
+    "eslint": "^9.11.1",
+    "eslint-plugin-react-hooks": "^5.1.0-rc.0",
+    "eslint-plugin-react-refresh": "^0.4.12",
+    "globals": "^15.9.0",
+    "prettier": "^2.8.8",
+    "prettier-plugin-tailwindcss": "^0.2.7",
+    "tailwindcss": "^3.4.17",
+    "tsx": "^4.19.4",
+    "typescript": "^5.5.3",
+    "typescript-eslint": "^8.7.0",
+    "vite": "^5.4.8",
+    "vite-plugin-node-polyfills": "^0.22.0"
   }
 }
