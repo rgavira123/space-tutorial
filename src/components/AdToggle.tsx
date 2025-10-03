@@ -1,12 +1,14 @@
 import { motion } from 'framer-motion'
+import { useShowAds } from '../context/showAdsContext'
 
 interface AdToggleProps {
-  showAds: boolean
-  onToggle: (show: boolean) => void
   text?: string
 }
 
-const AdToggle = ({ showAds, onToggle, text }: AdToggleProps) => {
+const AdToggle = ({text}: AdToggleProps) => {
+  
+  const {showAds, setShowAds} = useShowAds();
+  
   return (
     <div className="flex items-center gap-3">
       <span className="text-sm text-gray-600 font-medium">
@@ -14,7 +16,7 @@ const AdToggle = ({ showAds, onToggle, text }: AdToggleProps) => {
       </span>
       
       <button
-        onClick={() => onToggle(!showAds)}
+        onClick={() => setShowAds(!showAds)}
         className={`
           relative inline-flex h-6 w-11 items-center rounded-full
           transition-colors duration-200 ease-in-out focus:outline-none
