@@ -3,13 +3,14 @@ import { motion } from 'framer-motion'
 interface AdToggleProps {
   showAds: boolean
   onToggle: (show: boolean) => void
+  text?: string
 }
 
-const AdToggle = ({ showAds, onToggle }: AdToggleProps) => {
+const AdToggle = ({ showAds, onToggle, text }: AdToggleProps) => {
   return (
     <div className="flex items-center gap-3">
       <span className="text-sm text-gray-600 font-medium">
-        {showAds ? 'Hide Ads' : 'Show Ads'}
+        {showAds ? `Hide ${text ?? 'Ads'}` : `Show ${text ?? 'Ads'}`}
       </span>
       
       <button

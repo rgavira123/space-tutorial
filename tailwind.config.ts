@@ -27,7 +27,8 @@ export default {
       }
     }
   },
-  plugins: [require('prettier-plugin-tailwindcss')],
+  // Enable Tailwind Typography for better default markdown styling via the `prose` classes
+  plugins: [require('@tailwindcss/typography')],
   darkMode: 'class',
 } satisfies Config
 
