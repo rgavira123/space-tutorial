@@ -1,6 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { Article, Frontmatter } from './types.js'
+import { SpaceClient } from 'space-node-client';
 
 // Parse simple YAML-like frontmatter
 export function parseFrontmatter(raw: string): { frontmatter: Frontmatter; content: string } {
@@ -53,4 +54,14 @@ export function loadAllArticlesFromDisk(contentDir: string): Article[] {
 
   entries.sort((a, b) => new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime())
   return entries
+}
+
+export function resetContractUsageLevels(userId: string, spaceClient: SpaceClient){
+  return fetch(`${spaceClient.httpUrl}/contracts/${userId}/usageLevels?reset=true`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': spaceClient.apiKey,
+    },
+  })
 }
