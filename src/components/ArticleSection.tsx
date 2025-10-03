@@ -1,14 +1,18 @@
 import { motion } from "framer-motion";
-import { loadAllArticles } from "../utils/articles";
 import { useEffect, useMemo, useState } from "react";
 import NewsArticle from "./NewsArticle";
 import { useShowAds } from "../context/showAdsContext";
+import Loading from "./Loading";
+import ErrorMessage from "./ErrorMessage";
+import { fetchArticles, ArticleDTO } from "../services/api";
 
 export default function ArticleSection() {
-  const articles = useMemo(() => loadAllArticles(), []);
+  const [articles, setArticles] = useState<ArticleDTO[]>([]);
   const [currentIdx, setCurrentIdx] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const current = articles[currentIdx % articles.length];
+  const current = useMemo(() => (articles.length ? articles[currentIdx % articles.length] : null), [articles, currentIdx]);
 
   const { showAds } = useShowAds();
 
@@ -19,12 +23,36 @@ export default function ArticleSection() {
     }
   }, [currentIdx]);
 
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      try {
+        setLoading(true);
+        const data = await fetchArticles();
+        if (!cancelled) {
+          setArticles(data);
+          setError(null);
+        }
+      } catch (e: any) {
+        if (!cancelled) setError(e?.message || "Failed to load articles");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
     <motion.div
       layout
       transition={{ duration: 0.3 }}
       className={`mb-12 ${showAds ? "lg:col-span-8" : "lg:col-span-12"}`}>
-      {articles.length > 0 && (
+      {loading && <Loading label="Loading articles…" />}
+      {error && <ErrorMessage message={error} />}
+      {!loading && !error && articles.length > 0 && current && (
         <>
           <NewsArticle
             frontmatter={{

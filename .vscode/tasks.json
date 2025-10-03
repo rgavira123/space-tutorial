@@ -1,0 +1,10 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "dev (client+server+css)",
+			"type": "shell",
+			"command": "pnpm run dev"
+		}
+	]
+}

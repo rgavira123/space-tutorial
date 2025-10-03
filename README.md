@@ -23,8 +23,6 @@ A modern news page application built with TypeScript, React, TailwindCSS, and Fr
 
 ### Prerequisites
 
-- Node.js (version 16 or higher)
-- npm or yarn package manager
 
 ### Installation
 
@@ -38,6 +36,18 @@ cd space-tutorial
 ```bash
 npm install
 ```
+### Development
+
+- Run both API and frontend: pnpm dev
+- Frontend dev server: http://localhost:5173
+- API server: http://localhost:5174 (proxied under /api by Vite)
+
+### Production build
+
+- Build both frontend and server TS: pnpm build
+- Start API only (serves data): pnpm start:server
+
+The frontend currently expects /api endpoints available; in production, deploy the server and host the built frontend separately or via a static host.
 
 ### Development Workflow
 
