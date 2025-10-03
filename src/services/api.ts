@@ -1,4 +1,4 @@
-import { SpaceClient, TokenService } from "space-react-client";
+import { TokenService } from "space-react-client";
 
 // Simple API client for the articles backend
 export interface Frontmatter {
@@ -20,31 +20,28 @@ export interface ArticlesResponse {
   count: number;
 }
 
-const BASE =
-  typeof window !== "undefined"
-    ? ""
-    : process.env.API_BASE_URL || "http://localhost:5174";
-
-export async function fetchArticles(
-  tokenService: TokenService
-): Promise<ArticleDTO[]> {
-  const res = await fetch(`${BASE}/api/articles`);
-
-  tokenService.updatePricingToken(res.headers.get("PricingToken") || "");
-  
-  if (!res.ok) throw new Error(`API error ${res.status}`);
-  const data: ArticlesResponse = await res.json();
-
-
-  return data.items;
-}
-
 export async function fetchArticle(
   id: number,
   tokenService: TokenService
 ): Promise<Record<string, any>> {
-  const res = await fetch(`${BASE}/api/articles/${id}`);
+  const res = await fetch(`/api/articles/${id}`);
   
+  tokenService.updatePricingToken(res.headers.get("PricingToken") || "");
+
+  return res.json();
+}
+
+export async function getSubscriptionPlan(tokenService: TokenService){
+  const res = await fetch(`/api/subscription`);
+
+  tokenService.updatePricingToken(res.headers.get("PricingToken") || "");
+
+  return res.json();
+}
+
+export async function updateSubscription(tokenService: TokenService){
+  const res = await fetch(`/api/subscription`, { method: "PUT" });
+
   tokenService.updatePricingToken(res.headers.get("PricingToken") || "");
 
   return res.json();

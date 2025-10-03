@@ -6,11 +6,7 @@ import ErrorMessage from "./ErrorMessage";
 import { ArticleDTO, fetchArticle } from "../services/api";
 import { usePricingToken } from "space-react-client";
 
-export default function ArticleSection({
-  containerClassName,
-}: {
-  containerClassName?: string;
-}) {
+export default function ArticleSection({containerClassName}: {containerClassName?: string}) {
   const [article, setArticle] = useState<ArticleDTO | null>(null);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [loading, setLoading] = useState(true);

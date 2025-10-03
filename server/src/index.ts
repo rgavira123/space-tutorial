@@ -109,6 +109,71 @@ app.get("/api/articles/:id", async (req: Request, res: Response) => {
   }
 });
 
+app.get("/api/subscription", async (req: Request, res: Response) => {
+  try {
+    const contract = await spaceClient.contracts.getContract(USER_ID);
+
+    res
+      .header({
+        PricingToken: await spaceClient.features.generateUserPricingToken(
+          USER_ID
+        ),
+      })
+      .json({ subscriptionPlan: contract.subscriptionPlans.news });
+  } catch (err) {
+    res
+      .status(500)
+      .header({
+        PricingToken: await spaceClient.features.generateUserPricingToken(
+          USER_ID
+        ),
+      })
+      .json({ error: "Failed to fetch subscription plan" });
+  }
+})
+
+app.put("/api/subscription", async (req: Request, res: Response) => {
+  try {
+
+    const pricingPlans = ["BASIC", "PREMIUM"] as const;
+
+    const currentContract = await spaceClient.contracts.getContract(USER_ID);
+    const currentPlan = currentContract.subscriptionPlans.news;
+
+    const currentPlanIdx = pricingPlans.indexOf(currentPlan as any);
+    const newPlanIdx =
+      currentPlanIdx < pricingPlans.length - 1 ? currentPlanIdx + 1 : 0;
+    const newPlan = pricingPlans[newPlanIdx];
+
+    await spaceClient.contracts.updateContractSubscription(USER_ID, {
+      contractedServices: {
+        news: "1.0",
+      },
+      subscriptionPlans: {
+        news: newPlan,
+      },
+      subscriptionAddOns: {},
+    });
+
+    res
+      .header({
+        PricingToken: await spaceClient.features.generateUserPricingToken(
+          USER_ID
+        ),
+      })
+      .json({message: `Subscription updated to ${newPlan}`});
+  } catch (err) {
+    res
+      .status(500)
+      .header({
+        PricingToken: await spaceClient.features.generateUserPricingToken(
+          USER_ID
+        ),
+      })
+      .json({ error: "Failed to update subscription" });
+  }
+});
+
 app.listen(port, () => {
   console.log(`API listening on http://localhost:${port}`);
 });

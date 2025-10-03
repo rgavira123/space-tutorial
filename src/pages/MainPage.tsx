@@ -2,30 +2,12 @@ import Header from "../components/Header";
 import LeftAd from "../components/LeftAd";
 import ArticleSection from "../components/ArticleSection";
 import RightAd from "../components/RightAd";
-import {
-  Default,
-  Feature,
-  On,
-  usePricingToken,
-} from "space-react-client";
-import { useEffect, useState } from "react";
+import { Default, Feature, On } from "space-react-client";
 import { AnimatePresence } from "framer-motion";
 import BottomAd from "../components/BottomAd";
 
 export default function MainPage() {
-  const [loading, setLoading] = useState(true);
-  const tokenService = usePricingToken();
-
-  useEffect(() => {
-    fetch(`/api/health`).then(async (res) => {
-      tokenService.updatePricingToken(res.headers.get("PricingToken") || "");
-      setLoading(false);
-    });
-  }, [tokenService]);
-
-  return loading ? (
-    <div>Loading...</div>
-  ) : (
+  return (
     <div className="min-h-screen bg-gray-50">
       <Header />
 
@@ -41,7 +23,7 @@ export default function MainPage() {
           </AnimatePresence>
 
           {/* Main Content */}
-          <Feature id="news-news">
+          <Feature id="news-sideAds">
             <On>
               <ArticleSection containerClassName="lg:col-span-8" />
             </On>

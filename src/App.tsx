@@ -11,7 +11,7 @@ function App() {
 
   return (
     <SpaceProvider config={spaceConfig}>
-      <MainPage />
+        <MainPage />
     </SpaceProvider>
   );
 }
