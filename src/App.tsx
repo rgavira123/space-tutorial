@@ -25,7 +25,7 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <h1 className="text-3xl font-bold text-gray-900">Space News</h1>
-            <AdToggle showAds={showAds} onToggle={setShowAds} text="Side Ads" />
+            <AdToggle showAds={showAds} onToggle={setShowAds} text="Ads" />
           </div>
         </div>
       </header>
@@ -123,9 +123,6 @@ function App() {
                 bgColor="bg-green-600"
                 layout="horizontal"
               />
-              <div className="mt-4 flex justify-end">
-                <AdToggle showAds={showAds} onToggle={setShowAds} text="Bottom Ads" />
-              </div>
             </motion.div>
           )}
         </AnimatePresence>
