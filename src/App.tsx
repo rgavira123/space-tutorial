@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import NewsArticle from './components/NewsArticle'
 import Advertisement from './components/Advertisement'
@@ -11,6 +11,13 @@ function App() {
   const [currentIdx, setCurrentIdx] = useState(0)
 
   const current = articles[currentIdx % articles.length]
+
+  // Scroll to top whenever the current article changes
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }, [currentIdx])
 
   return (
     <div className="min-h-screen bg-gray-50">

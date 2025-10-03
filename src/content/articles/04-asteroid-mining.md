@@ -1,6 +1,6 @@
 ---
 title: "Treasure in the Sky: The Future of Asteroid Mining"
-date: 2025-10-03
+date: 2025-10-04
 author: "Marcus L. Donovan"
 category: "Space Economy"
 ---

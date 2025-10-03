@@ -1,6 +1,6 @@
 ---
 title: "Living Among the Stars: The Age of Space Habitats"
-date: 2025-10-03
+date: 2025-10-01
 author: "Clara D. Winters"
 category: "Futurism"
 ---

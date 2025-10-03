@@ -1,6 +1,6 @@
 ---
 title: "Chasing Shadows: The Mystery of Black Holes"
-date: 2025-10-03
+date: 2025-10-02
 author: "Julian K. Rhodes"
 category: "Astrophysics"
 ---
