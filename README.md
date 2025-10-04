@@ -207,7 +207,7 @@ const pricingTokenMiddleware = (spaceClient: SpaceClient, userId: string) => {
 export default featureChecker;
 ```
 
-> [!INFO]
+> [!NOTE]
 > **What is this middleware doing?**
 > Well, it is not a middleware itself, it is a middleware factory –a function that returns a middleware. This allows the `spaceClient` and `userId`parameters to be passed in when configured on the server (see below). It intercepts the response methods (send, json, and end) to ensure that a fresh PricingToken is generated and attached to the response headers right before the server sends data back to the client.
 
@@ -337,12 +337,12 @@ export default function MainPage() {
 }
 ```
 
-> [!INFO]
+> [!NOTE]
 > This replaces the old `useShowAds` logic. Any ad-related state should now be controlled via `<Feature>`.
 
 > [!TIP]
 > Remember that the `<Feature>` component can have up to four diferent children: `<On>`, `<Default>`, `<Loading>`, and `<ErrorFallback>`. Respectively:
-
+>
 > - `<On>`: Rendered when the feature access is evaluated as true by SPACE.
 > - `<Default>`: Rendered when the feature access is evaluated as false by SPACE.
 > - `<Loading>`: Rendered while the feature evaluation result is computing.
