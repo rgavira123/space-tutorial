@@ -342,7 +342,7 @@ export default function MainPage() {
 
 > [!TIP]
 > Remember that the `<Feature>` component can have up to four diferent children: `<On>`, `<Default>`, `<Loading>`, and `<ErrorFallback>`. Respectively:
-
+>
 > - `<On>`: Rendered when the feature access is evaluated as true by SPACE.
 > - `<Default>`: Rendered when the feature access is evaluated as false by SPACE.
 > - `<Loading>`: Rendered while the feature evaluation result is computing.
