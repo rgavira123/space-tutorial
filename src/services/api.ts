@@ -18,18 +18,8 @@ export interface ArticlesResponse {
   count: number
 }
 
-const BASE = typeof window !== 'undefined' ? '' : process.env.API_BASE_URL || 'http://localhost:5174'
-
-export async function fetchArticles(): Promise<ArticleDTO[]> {
-  const res = await fetch(`${BASE}/api/articles`)
-  if (!res.ok) throw new Error(`API error ${res.status}`)
-  const data: ArticlesResponse = await res.json()
-console.log('Fetched articles:', data);
-  return data.items
-}
-
-export async function fetchArticle(id: string): Promise<ArticleDTO> {
-  const res = await fetch(`${BASE}/api/articles/${id}`)
+export async function fetchArticle(id: number): Promise<Record<string, any>> {
+  const res = await fetch(`/api/articles/${id}`)
   if (!res.ok) throw new Error(`API error ${res.status}`)
   return res.json()
 }

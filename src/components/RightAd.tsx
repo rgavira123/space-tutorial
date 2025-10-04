@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import Advertisement from "./Advertisement";
 import { useShowAds } from "../context/showAdsContext";
 
@@ -6,7 +6,7 @@ export default function RightAd() {
   const { showAds } = useShowAds();
 
   return (
-    <AnimatePresence>
+    <>
       {showAds && (
         <motion.div
           initial={{ opacity: 0, x: 50 }}
@@ -22,6 +22,6 @@ export default function RightAd() {
           />
         </motion.div>
       )}
-    </AnimatePresence>
+    </>
   );
 }

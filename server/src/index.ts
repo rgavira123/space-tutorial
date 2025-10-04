@@ -22,21 +22,10 @@ app.get('/api/health', (_req: Request, res: Response) => {
   res.json({ ok: true, service: 'articles-api', time: new Date().toISOString() })
 })
 
-app.get('/api/articles', (_req: Request, res: Response) => {
-  try {
-    console.log('Loading articles from:', articlesDir);
-    const articles = loadAllArticlesFromDisk(articlesDir)
-    res.json({ items: articles, count: articles.length })
-  } catch (err) {
-    console.error(err)
-    res.status(500).json({ error: 'Failed to load articles' })
-  }
-})
-
 app.get('/api/articles/:id', (req: Request, res: Response) => {
   try {
     const articles = loadAllArticlesFromDisk(articlesDir)
-    const found = articles.find((a) => a.id === req.params.id)
+    const found = articles[Number(req.params.id)]
     if (!found) return res.status(404).json({ error: 'Not found' })
     res.json(found)
   } catch (err) {

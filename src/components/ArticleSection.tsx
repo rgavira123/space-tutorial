@@ -4,15 +4,13 @@ import NewsArticle from "./NewsArticle";
 import { useShowAds } from "../context/showAdsContext";
 import Loading from "./Loading";
 import ErrorMessage from "./ErrorMessage";
-import { fetchArticles, ArticleDTO } from "../services/api";
+import { fetchArticle, ArticleDTO } from "../services/api";
 
 export default function ArticleSection() {
-  const [articles, setArticles] = useState<ArticleDTO[]>([]);
+  const [article, setArticle] = useState<ArticleDTO | null>(null);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  const current = useMemo(() => (articles.length ? articles[currentIdx % articles.length] : null), [articles, currentIdx]);
 
   const { showAds } = useShowAds();
 
@@ -24,26 +22,23 @@ export default function ArticleSection() {
   }, [currentIdx]);
 
   useEffect(() => {
-    let cancelled = false;
-    async function load() {
-      try {
-        setLoading(true);
-        const data = await fetchArticles();
-        if (!cancelled) {
-          setArticles(data);
-          setError(null);
+    setLoading(true);
+    fetchArticle(currentIdx)
+      .then((data) => {
+        if (data.error) {
+          throw new Error(data.error);
         }
-      } catch (e: any) {
-        if (!cancelled) setError(e?.message || "Failed to load articles");
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-    load();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+
+        setArticle(data as ArticleDTO);
+        setError(null);
+      })
+      .catch((e) => {
+        setError(e?.message || "Failed to load articles");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [currentIdx]);
 
   return (
     <motion.div
@@ -52,24 +47,24 @@ export default function ArticleSection() {
       className={`mb-12 ${showAds ? "lg:col-span-8" : "lg:col-span-12"}`}>
       {loading && <Loading label="Loading articles…" />}
       {error && <ErrorMessage message={error} />}
-      {!loading && !error && articles.length > 0 && current && (
+      {!loading && !error && article && (
         <>
           <NewsArticle
             frontmatter={{
-              title: current.frontmatter.title,
-              date: current.frontmatter.date,
-              author: current.frontmatter.author,
-              category: current.frontmatter.category,
+              title: article.frontmatter.title,
+              date: article.frontmatter.date,
+              author: article.frontmatter.author,
+              category: article.frontmatter.category,
             }}
-            content={current.content}
-            readingTimeMinutes={current.readingTimeMinutes}
+            content={article.content}
+            readingTimeMinutes={article.readingTimeMinutes}
           />
 
           <div className="flex justify-end mt-6">
             <motion.button
               whileTap={{ scale: 0.97 }}
               whileHover={{ scale: 1.02 }}
-              onClick={() => setCurrentIdx((i) => (i + 1) % articles.length)}
+              onClick={() => setCurrentIdx((i) => (i + 1) % 5)}
               className="px-4 py-2 rounded-md bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium shadow-sm">
               Load another article
             </motion.button>
