@@ -4,7 +4,7 @@ import NewsArticle from "./NewsArticle";
 import { useShowAds } from "../context/showAdsContext";
 import Loading from "./Loading";
 import ErrorMessage from "./ErrorMessage";
-import { fetchArticle, ArticleDTO } from "../services/api";
+import useApi, { ArticleDTO } from "../hooks/useApi";
 
 export default function ArticleSection() {
   const [article, setArticle] = useState<ArticleDTO | null>(null);
@@ -13,6 +13,7 @@ export default function ArticleSection() {
   const [error, setError] = useState<string | null>(null);
 
   const { showAds } = useShowAds();
+  const { fetchArticle } = useApi();
 
   // Scroll to top whenever the current article changes
   useEffect(() => {
