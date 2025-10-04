@@ -13,11 +13,6 @@ export interface ArticleDTO {
   readingTimeMinutes: number;
 }
 
-export interface ArticlesResponse {
-  items: ArticleDTO[];
-  count: number;
-}
-
 export default function useApi() {
   async function fetchArticle(id: number): Promise<Record<string, any>> {
     const res = await fetch(`/api/articles/${id}`);
