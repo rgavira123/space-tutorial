@@ -1,23 +1,24 @@
-import { usePricingToken } from "space-react-client";
+import { useSpaceClient } from "space-react-client";
 import { getSubscriptionPlan, updateSubscription } from "../services/api";
 import { useEffect, useState } from "react";
 
 export default function Header() {
   const [currentPlan, setCurrentPlan] = useState("Loading...");
 
-  const tokenService = usePricingToken();
+  const spaceClient = useSpaceClient();
 
   async function handlePlanChange(){
-    await updateSubscription(tokenService);
+    await updateSubscription(spaceClient);
     setCurrentPlan(currentPlan === "BASIC" ? "PREMIUM" : "BASIC");
+    window.location.reload();
   }
 
   useEffect(() => {
-    getSubscriptionPlan(tokenService).then(async (res) => {
+    getSubscriptionPlan(spaceClient).then(async (res) => {
       setCurrentPlan(res.subscriptionPlan);
     })
-  }, [tokenService]);
-  
+  }, [spaceClient]);
+
   return (
     <header className="bg-white shadow-sm border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

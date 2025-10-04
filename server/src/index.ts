@@ -52,6 +52,22 @@ spaceClient.on("synchronized", async () => {
   }
 });
 
+spaceClient.on("pricing_created", async payload => {
+  spaceClient.contracts.getContract(USER_ID)
+  .then(async () => {
+    await spaceClient.contracts.updateContractSubscription(USER_ID, {
+      contractedServices: {
+        news: payload.pricingVersion ?? "1.0",
+      },
+      subscriptionPlans: {
+        news: "BASIC",
+      },
+      subscriptionAddOns: {},
+    });
+    await resetContractUsageLevels(USER_ID, spaceClient);
+  });
+});
+
 app.get("/api/health", async (_req: Request, res: Response) => {
   res
     .header({
@@ -90,6 +106,7 @@ app.get("/api/articles/:id", async (req: Request, res: Response) => {
     const articles = loadAllArticlesFromDisk(articlesDir);
     const found = articles[Number(req.params.id)];
     if (!found) return res.status(404).json({ error: "Not found" });
+    
     res
       .header({
         PricingToken: await spaceClient.features.generateUserPricingToken(

@@ -2,11 +2,27 @@ import Header from "../components/Header";
 import LeftAd from "../components/LeftAd";
 import ArticleSection from "../components/ArticleSection";
 import RightAd from "../components/RightAd";
-import { Default, Feature, On } from "space-react-client";
+import { Default, Feature, On, useSpaceClient } from "space-react-client";
 import { AnimatePresence } from "framer-motion";
 import BottomAd from "../components/BottomAd";
+import { useEffect } from "react";
+import { getSubscriptionPlan } from "../services/api";
 
 export default function MainPage() {
+  
+  const spaceClient = useSpaceClient();
+
+  useEffect(() => {
+    spaceClient.on("pricing_created", () => {
+      console.log("Pricing created event received");
+      getSubscriptionPlan(spaceClient)
+    })
+
+    return () => {
+      spaceClient.off("pricing_created")
+    }
+  })
+  
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />

@@ -1,4 +1,4 @@
-import { TokenService } from "space-react-client";
+import { SpaceClient, TokenService } from "space-react-client";
 
 // Simple API client for the articles backend
 export interface Frontmatter {
@@ -22,27 +22,27 @@ export interface ArticlesResponse {
 
 export async function fetchArticle(
   id: number,
-  tokenService: TokenService
+  spaceClient: SpaceClient
 ): Promise<Record<string, any>> {
   const res = await fetch(`/api/articles/${id}`);
-  
-  tokenService.updatePricingToken(res.headers.get("PricingToken") || "");
+
+  spaceClient.token.update(res.headers.get("PricingToken") || "");
 
   return res.json();
 }
 
-export async function getSubscriptionPlan(tokenService: TokenService){
+export async function getSubscriptionPlan(spaceClient: SpaceClient){
   const res = await fetch(`/api/subscription`);
 
-  tokenService.updatePricingToken(res.headers.get("PricingToken") || "");
+  spaceClient.token.update(res.headers.get("PricingToken") || "");
 
   return res.json();
 }
 
-export async function updateSubscription(tokenService: TokenService){
+export async function updateSubscription(spaceClient: SpaceClient){
   const res = await fetch(`/api/subscription`, { method: "PUT" });
 
-  tokenService.updatePricingToken(res.headers.get("PricingToken") || "");
+  spaceClient.token.update(res.headers.get("PricingToken") || "");
 
   return res.json();
 }
