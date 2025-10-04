@@ -26,7 +26,6 @@ export default function ArticleSection({
     if (typeof window !== "undefined") {
       window.scrollTo({ top: 0, behavior: "auto" });
     }
-    console.log(spaceClient.token.getPayload());
   }, [currentIdx, tokenPayload]);
 
   useEffect(() => {

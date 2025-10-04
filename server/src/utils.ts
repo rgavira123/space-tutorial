@@ -56,12 +56,20 @@ export function loadAllArticlesFromDisk(contentDir: string): Article[] {
   return entries
 }
 
-export function resetContractUsageLevels(userId: string, spaceClient: SpaceClient){
-  return fetch(`${spaceClient.httpUrl}/contracts/${userId}/usageLevels?reset=true`, {
+export async function resetContractUsageLevels(userId: string, spaceClient: SpaceClient){
+  
+  const response = await fetch(`${spaceClient.httpUrl}/contracts/${userId}/usageLevels?reset=true`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
       'x-api-key': spaceClient.apiKey,
     },
   })
+
+  const contract = await spaceClient.contracts.getContract(userId);
+
+  console.log(response);
+  console.log(contract.usageLevels["news"]["maxNews"]);
+  
+  return response;
 }

@@ -4,8 +4,8 @@ import MainPage from "./pages/MainPage";
 function App() {
 
   const spaceConfig = {
-    url: "http://localhost:3000",
-    apiKey: "9cedd24632167a021667df44a26362dfb778c1566c3d4564e132cb58770d8c67",
+    url: "http://localhost:5403",
+    apiKey: "c52a83122dc0403567dc1d1af2f261da5dce9c49bee7e199b96ce3f4bfc85ac6",
     allowConnectionWithSpace: true
   }
 

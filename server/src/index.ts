@@ -12,7 +12,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const port = process.env.PORT ? Number(process.env.PORT) : 8080;
+const port = process.env.PORT ? Number(process.env.PORT) : 3000;
 
 app.use(helmet());
 app.use(express.json());
@@ -22,8 +22,8 @@ app.use(cors());
 const articlesDir = path.join(__dirname, "static", "content", "articles");
 
 const spaceClient: SpaceClient = connect({
-  url: "http://localhost:3000",
-  apiKey: "9cedd24632167a021667df44a26362dfb778c1566c3d4564e132cb58770d8c67",
+  url: "http://localhost:5403",
+  apiKey: "c52a83122dc0403567dc1d1af2f261da5dce9c49bee7e199b96ce3f4bfc85ac6",
 });
 
 spaceClient.on("synchronized", async () => {
@@ -50,22 +50,6 @@ spaceClient.on("synchronized", async () => {
       subscriptionAddOns: {},
     });
   }
-});
-
-spaceClient.on("pricing_created", async payload => {
-  spaceClient.contracts.getContract(USER_ID)
-  .then(async () => {
-    await spaceClient.contracts.updateContractSubscription(USER_ID, {
-      contractedServices: {
-        news: payload.pricingVersion ?? "1.0",
-      },
-      subscriptionPlans: {
-        news: "BASIC",
-      },
-      subscriptionAddOns: {},
-    });
-    await resetContractUsageLevels(USER_ID, spaceClient);
-  });
 });
 
 app.get("/api/health", async (_req: Request, res: Response) => {
@@ -106,7 +90,7 @@ app.get("/api/articles/:id", async (req: Request, res: Response) => {
     const articles = loadAllArticlesFromDisk(articlesDir);
     const found = articles[Number(req.params.id)];
     if (!found) return res.status(404).json({ error: "Not found" });
-    
+
     res
       .header({
         PricingToken: await spaceClient.features.generateUserPricingToken(
@@ -147,11 +131,10 @@ app.get("/api/subscription", async (req: Request, res: Response) => {
       })
       .json({ error: "Failed to fetch subscription plan" });
   }
-})
+});
 
 app.put("/api/subscription", async (req: Request, res: Response) => {
   try {
-
     const pricingPlans = ["BASIC", "PREMIUM"] as const;
 
     const currentContract = await spaceClient.contracts.getContract(USER_ID);
@@ -178,7 +161,7 @@ app.put("/api/subscription", async (req: Request, res: Response) => {
           USER_ID
         ),
       })
-      .json({message: `Subscription updated to ${newPlan}`});
+      .json({ message: `Subscription updated to ${newPlan}` });
   } catch (err) {
     res
       .status(500)
@@ -189,6 +172,32 @@ app.put("/api/subscription", async (req: Request, res: Response) => {
       })
       .json({ error: "Failed to update subscription" });
   }
+});
+
+app.put("/api/pricing", async (req: Request, res: Response) => {
+  const contract = await spaceClient.contracts.getContract(USER_ID);
+
+  console.log(req.body);
+
+  await spaceClient.contracts.updateContractSubscription(USER_ID, {
+    contractedServices: {
+      news: req.body.pricingVersion ?? "1.0",
+    },
+    subscriptionPlans: {
+      news: contract.subscriptionPlans["news"],
+    },
+    subscriptionAddOns: {},
+  });
+
+  return res
+    .header({
+      PricingToken: await spaceClient.features.generateUserPricingToken(
+        USER_ID
+      ),
+    })
+    .json({
+      message: `Pricing updated to ${req.body.pricingVersion}`,
+    });
 });
 
 app.listen(port, () => {

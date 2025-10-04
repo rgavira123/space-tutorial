@@ -31,7 +31,7 @@ export async function fetchArticle(
   return res.json();
 }
 
-export async function getSubscriptionPlan(spaceClient: SpaceClient){
+export async function getSubscriptionPlan(spaceClient: SpaceClient) {
   const res = await fetch(`/api/subscription`);
 
   spaceClient.token.update(res.headers.get("PricingToken") || "");
@@ -39,8 +39,25 @@ export async function getSubscriptionPlan(spaceClient: SpaceClient){
   return res.json();
 }
 
-export async function updateSubscription(spaceClient: SpaceClient){
+export async function updateSubscription(spaceClient: SpaceClient) {
   const res = await fetch(`/api/subscription`, { method: "PUT" });
+
+  spaceClient.token.update(res.headers.get("PricingToken") || "");
+
+  return res.json();
+}
+
+export async function updateContractToLatestPricingVersion(
+  spaceClient: SpaceClient,
+  payload
+) {
+  const res = await fetch(`/api/pricing`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
 
   spaceClient.token.update(res.headers.get("PricingToken") || "");
 

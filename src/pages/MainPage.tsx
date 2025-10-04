@@ -6,22 +6,20 @@ import { Default, Feature, On, useSpaceClient } from "space-react-client";
 import { AnimatePresence } from "framer-motion";
 import BottomAd from "../components/BottomAd";
 import { useEffect } from "react";
-import { getSubscriptionPlan } from "../services/api";
+import { updateContractToLatestPricingVersion } from "../services/api";
 
 export default function MainPage() {
   
   const spaceClient = useSpaceClient();
 
   useEffect(() => {
-    spaceClient.on("pricing_created", () => {
-      console.log("Pricing created event received");
-      getSubscriptionPlan(spaceClient)
-    })
-
-    return () => {
-      spaceClient.off("pricing_created")
-    }
-  })
+    spaceClient.on("pricing_created", (payload) => {
+      console.log("Pricing plan changed, updating contract to latest pricing version");
+      updateContractToLatestPricingVersion(spaceClient, payload).then((response) => {
+        window.location.reload();
+      });
+    });
+  }, [spaceClient])
   
   return (
     <div className="min-h-screen bg-gray-50">
