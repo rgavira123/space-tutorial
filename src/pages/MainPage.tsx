@@ -6,16 +6,17 @@ import { Default, Feature, On, useSpaceClient } from "space-react-client";
 import { AnimatePresence } from "framer-motion";
 import BottomAd from "../components/BottomAd";
 import { useEffect } from "react";
-import { updateContractToLatestPricingVersion } from "../services/api";
+import useApi from "../hooks/useApi";
 
 export default function MainPage() {
   
   const spaceClient = useSpaceClient();
-
+  const { updateContractToLatestPricingVersion } = useApi();
+  
   useEffect(() => {
     spaceClient.on("pricing_created", (payload) => {
       console.log("Pricing plan changed, updating contract to latest pricing version");
-      updateContractToLatestPricingVersion(spaceClient, payload).then((response) => {
+      updateContractToLatestPricingVersion(payload).then(() => {
         window.location.reload();
       });
     });

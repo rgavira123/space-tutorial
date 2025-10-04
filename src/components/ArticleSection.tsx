@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import NewsArticle from "./NewsArticle";
 import Loading from "./Loading";
 import ErrorMessage from "./ErrorMessage";
-import { ArticleDTO, fetchArticle } from "../services/api";
+import useApi, { ArticleDTO } from "../hooks/useApi";
 import { usePricingTokenPayload, useSpaceClient } from "space-react-client";
 import { FiFileText } from "react-icons/fi";
 
@@ -17,10 +17,13 @@ export default function ArticleSection({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const spaceClient = useSpaceClient();
   const tokenPayload = usePricingTokenPayload();
-  const used = tokenPayload?.features?.["news-news"]?.used?.["news-maxNews"] ?? 0;
-  const limit = tokenPayload?.features?.["news-news"]?.limit?.["news-maxNews"] ?? 0;
+  const { fetchArticle } = useApi();
+  
+  const used =
+    tokenPayload?.features?.["news-news"]?.used?.["news-maxNews"] ?? 0;
+  const limit =
+    tokenPayload?.features?.["news-news"]?.limit?.["news-maxNews"] ?? 0;
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -30,7 +33,7 @@ export default function ArticleSection({
 
   useEffect(() => {
     setLoading(true);
-    fetchArticle(currentIdx, spaceClient)
+    fetchArticle(currentIdx)
       .then((data) => {
         if (data.error) {
           throw new Error(data.error);
@@ -75,8 +78,7 @@ export default function ArticleSection({
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.2 }}
                 className="mr-3 inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-indigo-50/80 px-3 py-1 text-xs font-medium text-indigo-700 shadow-sm"
-                aria-label={`News used ${used} out of ${limit}`}
-              >
+                aria-label={`News used ${used} out of ${limit}`}>
                 <FiFileText className="h-3.5 w-3.5" />
                 <span>
                   <span className="text-sm font-semibold">{used}</span>

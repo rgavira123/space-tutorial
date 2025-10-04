@@ -1,20 +1,21 @@
 import { useSpaceClient } from "space-react-client";
-import { getSubscriptionPlan, updateSubscription } from "../services/api";
 import { useEffect, useState } from "react";
+import useApi from "../hooks/useApi";
 
 export default function Header() {
   const [currentPlan, setCurrentPlan] = useState("Loading...");
+  const { getSubscriptionPlan, updateSubscription } = useApi();
 
   const spaceClient = useSpaceClient();
 
   async function handlePlanChange(){
-    await updateSubscription(spaceClient);
+    await updateSubscription();
     setCurrentPlan(currentPlan === "BASIC" ? "PREMIUM" : "BASIC");
     window.location.reload();
   }
 
   useEffect(() => {
-    getSubscriptionPlan(spaceClient).then(async (res) => {
+    getSubscriptionPlan().then(async (res) => {
       setCurrentPlan(res.subscriptionPlan);
     })
   }, [spaceClient]);

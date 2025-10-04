@@ -5,6 +5,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadAllArticlesFromDisk, resetContractUsageLevels } from "./utils.js";
 import { SpaceClient, connect } from "space-node-client";
+import pricingTokenMiddleware from "./middlewares/pricingTokenMiddleware";
 
 const USER_ID = "user-123";
 
@@ -25,6 +26,9 @@ const spaceClient: SpaceClient = connect({
   url: "http://localhost:5403",
   apiKey: "c52a83122dc0403567dc1d1af2f261da5dce9c49bee7e199b96ce3f4bfc85ac6",
 });
+
+// attach middleware after the client is created
+app.use(pricingTokenMiddleware(spaceClient, USER_ID));
 
 spaceClient.on("synchronized", async () => {
   try {
@@ -53,13 +57,7 @@ spaceClient.on("synchronized", async () => {
 });
 
 app.get("/api/health", async (_req: Request, res: Response) => {
-  res
-    .header({
-      PricingToken: await spaceClient.features.generateUserPricingToken(
-        USER_ID
-      ),
-    })
-    .json({
+  res.json({
       ok: true,
       service: "articles-api",
       time: new Date().toISOString(),
@@ -77,11 +75,6 @@ app.get("/api/articles/:id", async (req: Request, res: Response) => {
     if (!evaluationResult.eval) {
       return res
         .status(400)
-        .header({
-          PricingToken: await spaceClient.features.generateUserPricingToken(
-            USER_ID
-          ),
-        })
         .json({
           error:
             "You have reached the limit of news. Come back tomorrow or upgrade your plan for more access!",
@@ -91,21 +84,10 @@ app.get("/api/articles/:id", async (req: Request, res: Response) => {
     const found = articles[Number(req.params.id)];
     if (!found) return res.status(404).json({ error: "Not found" });
 
-    res
-      .header({
-        PricingToken: await spaceClient.features.generateUserPricingToken(
-          USER_ID
-        ),
-      })
-      .json(found);
+    res.json(found);
   } catch (err) {
     res
       .status(500)
-      .header({
-        PricingToken: await spaceClient.features.generateUserPricingToken(
-          USER_ID
-        ),
-      })
       .json({ error: "Failed to load article" });
   }
 });
@@ -114,21 +96,10 @@ app.get("/api/subscription", async (req: Request, res: Response) => {
   try {
     const contract = await spaceClient.contracts.getContract(USER_ID);
 
-    res
-      .header({
-        PricingToken: await spaceClient.features.generateUserPricingToken(
-          USER_ID
-        ),
-      })
-      .json({ subscriptionPlan: contract.subscriptionPlans.news });
+    res.json({ subscriptionPlan: contract.subscriptionPlans.news });
   } catch (err) {
     res
       .status(500)
-      .header({
-        PricingToken: await spaceClient.features.generateUserPricingToken(
-          USER_ID
-        ),
-      })
       .json({ error: "Failed to fetch subscription plan" });
   }
 });
@@ -155,29 +126,15 @@ app.put("/api/subscription", async (req: Request, res: Response) => {
       subscriptionAddOns: {},
     });
 
-    res
-      .header({
-        PricingToken: await spaceClient.features.generateUserPricingToken(
-          USER_ID
-        ),
-      })
-      .json({ message: `Subscription updated to ${newPlan}` });
+    res.json({ message: `Subscription updated to ${newPlan}` });
   } catch (err) {
     res
-      .status(500)
-      .header({
-        PricingToken: await spaceClient.features.generateUserPricingToken(
-          USER_ID
-        ),
-      })
-      .json({ error: "Failed to update subscription" });
+      .status(500).json({ error: "Failed to update subscription" });
   }
 });
 
 app.put("/api/pricing", async (req: Request, res: Response) => {
   const contract = await spaceClient.contracts.getContract(USER_ID);
-
-  console.log(req.body);
 
   await spaceClient.contracts.updateContractSubscription(USER_ID, {
     contractedServices: {
@@ -189,13 +146,7 @@ app.put("/api/pricing", async (req: Request, res: Response) => {
     subscriptionAddOns: {},
   });
 
-  return res
-    .header({
-      PricingToken: await spaceClient.features.generateUserPricingToken(
-        USER_ID
-      ),
-    })
-    .json({
+  return res.json({
       message: `Pricing updated to ${req.body.pricingVersion}`,
     });
 });
