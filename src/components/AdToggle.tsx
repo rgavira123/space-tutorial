@@ -16,7 +16,7 @@ const AdToggle = ({text}: AdToggleProps) => {
       </span>
       
       <button
-        onClick={() => setShowAds(!showAds)}
+        onClick={() => { setShowAds(!showAds) }}
         className={`
           relative inline-flex h-6 w-11 items-center rounded-full
           transition-colors duration-200 ease-in-out focus:outline-none
