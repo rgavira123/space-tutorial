@@ -95,6 +95,8 @@ The project consists of a simple web application divided into two main parts:
 - **`src/`** — React **frontend** displaying news articles and ads.  
   Main file: `src/App.tsx`
 
+In addition, you can find the solution to the laboratory in the **solution branch**.
+
 ## 3. Configuring SPACE and Basic Feature Toggling
 
 In this section, you’ll connect the app to a SPACE instance and enable basic pricing-driven self-adaptation.
