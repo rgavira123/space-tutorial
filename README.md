@@ -99,6 +99,10 @@ The project consists of a simple web application divided into two main parts:
 
 In this section, you’ll connect the app to a SPACE instance and enable basic pricing-driven self-adaptation.
 
+### Step 0 — Run a SPACE instance
+
+To do so, follow this tutorial: [How to run a SPACE instance](https://sphere-docs.vercel.app/docs/2.0.1/api/space/user-guide/run-space-instance).
+
 ### Step 1 — Install Dependencies
 
 ```bash
