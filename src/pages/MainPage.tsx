@@ -4,8 +4,12 @@ import ArticleSection from "../components/ArticleSection";
 import RightAd from "../components/RightAd";
 import BottomAd from "../components/BottomAd";
 import { AnimatePresence } from "framer-motion";
+import { useShowAds } from "../context/showAdsContext";
 
 export default function MainPage() {
+
+  const { showAds } = useShowAds();
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -14,21 +18,21 @@ export default function MainPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Left Sidebar Ad */}
           <AnimatePresence>
-            <LeftAd />
+            {showAds && <LeftAd />}
           </AnimatePresence>
 
           {/* Main Content */}
-          <ArticleSection />
+          {showAds ? <ArticleSection containerClassName="lg:col-span-8" /> : <ArticleSection containerClassName="lg:col-span-12" />}
 
           {/* Right Sidebar Ad */}
           <AnimatePresence>
-            <RightAd />
+            {showAds && <RightAd />}
           </AnimatePresence>
         </div>
 
         {/* Bottom Banner Ad */}
         <AnimatePresence>
-          <BottomAd />
+          {showAds && <BottomAd />}
         </AnimatePresence>
       </main>
     </div>

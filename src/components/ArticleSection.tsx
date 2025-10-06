@@ -6,13 +6,16 @@ import Loading from "./Loading";
 import ErrorMessage from "./ErrorMessage";
 import useApi, { ArticleDTO } from "../hooks/useApi";
 
-export default function ArticleSection() {
+export default function ArticleSection({
+  containerClassName,
+}: {
+  containerClassName?: string;
+}) {
   const [article, setArticle] = useState<ArticleDTO | null>(null);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const { showAds } = useShowAds();
   const { fetchArticle } = useApi();
 
   // Scroll to top whenever the current article changes
@@ -45,7 +48,7 @@ export default function ArticleSection() {
     <motion.div
       layout
       transition={{ duration: 0.3 }}
-      className={`mb-12 ${showAds ? "lg:col-span-8" : "lg:col-span-12"}`}>
+      className={`mb-12 ${containerClassName }`}>
       {loading && <Loading label="Loading articles…" />}
       {error && <ErrorMessage message={error} />}
       {!loading && !error && article && (
