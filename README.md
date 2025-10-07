@@ -799,12 +799,22 @@ export default function useApi() {
 +    });
 +  }
 }
+
+// ...
+
+return { fetchArticle,
+    getSubscription,
+    updateSubscription,
++   updateContractToLatestPricingVersion
+   };
+
 ```
 
 Finally, we’ll add a listener in **MainPage.tsx** that waits for a `pricing_created` event notification from SPACE:
 
 ```diff
 //...
++import useApi from "../hooks/useApi";
 
 export default function MainPage() {
 +  const { updateContractToLatestPricingVersion } = useApi();
