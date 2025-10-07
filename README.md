@@ -674,7 +674,6 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           <h1 className="text-3xl font-bold text-gray-900">Space News<span className="ml-2 text-sm font-normal text-gray-500">({currentPlan})</span></h1>
--          <AdToggle text="Ads" />
            {/* Plan Toggle Button */}
 +          <button onClick={handlePlanChange} className="px-4 py-2 rounded-md bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium shadow-sm">
 +            Change Plan
