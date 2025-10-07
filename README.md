@@ -445,8 +445,9 @@ This will render the left-side advertisement only if the user’s current subscr
 > In **Step 5**, we removed the old `ShowAdsContext` and switched to using the `SPACE` feature-based system.  
 > All logic related to `useShowAds`, `AdToggle`, and similar components should now be deleted.  
 > From this point onward, ads are fully controlled by the `<Feature>` component from **space-react-client**.  
->  
-> Below you can see how the **MainPage** should look after this refactor.
+
+
+Now, update the `MainPage` component located at **`src/pages/MainPage.tsx`** so it looks as follows:
 
 ```tsx
 import Header from "../components/Header";
@@ -506,8 +507,7 @@ export default function MainPage() {
 }
 ```
 
-The `Header` component should also be simplified to remove the `AdToggle` logic and all references to the old `ShowAdsContext`.  
-It should now look like this:
+Also, modify the `Header` component found at **`src/components/Header.tsx`** to remove any old `AdToggle` references and `ShowAdsContext` dependencies — it should now look like this:
 
 ```tsx
 export default function Header() {
@@ -528,26 +528,26 @@ export default function Header() {
 
 To correctly associate feature evaluations with a specific user, the frontend must identify the active user and request their **Pricing Token** from SPACE.
 
-In `MainPage.tsx`, import `useEffect` and call `spaceClient.setUserId` when the component mounts:
+In `/src/pagesMainPage.tsx`, import `useEffect` and call `spaceClient.setUserId` when the component mounts:
 
 ```diff
 + import { useEffect } from "react";
 
 + const spaceClient = useSpaceClient();
 
-useEffect(() => {
-  spaceClient
-    .setUserId("user-123")
-    .then(() => console.log("User's pricing token set"))
-    .catch(console.error);
-
-  // Listen for SPACE sync events
-  const onSync = () =>
-    console.log("Connected & synchronized with SPACE");
-  spaceClient.on("synchronized", onSync);
-
-  return () => spaceClient.off("synchronized", onSync);
-}, [spaceClient]);
++ useEffect(() => {
++  spaceClient
++    .setUserId("user-123")
++    .then(() => console.log("User's pricing token set"))
++    .catch(console.error);
++
++  // Listen for SPACE sync events
++  const onSync = () =>
++    console.log("Connected & synchronized with SPACE");
++  spaceClient.on("synchronized", onSync);
++
++  return () => spaceClient.off("synchronized", onSync);
++}, [spaceClient]);
 ```
 
 This step corresponds to the **"Identify the user and load a Pricing Token"** phase described in the [SPACE React Client documentation](https://sphere-docs.vercel.app/docs/2.0.1/api/space/SDKs/Frontend%20SDKs/space-react-client).
