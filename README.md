@@ -197,11 +197,12 @@ You can implement it by adding the following to `server/src/utils.ts`:
 + }
 ```
 
-Once this function exists, you can safely use it as shown below.
+Once this function exists, **go back to your main server file (`server/src/index.ts`)** and use it as shown below.
 
 To keep this lab focused and avoid unnecessary complexity, **the application does not implement authentication** and therefore operates with a single user. We register a **listener** for the `synchronized` event, which triggers whenever a new connection to SPACE is established. In its callback, the application ensures the **test user’s contract exists** –creating it with the ID `user-123` if absent– and, if it does, simply resets the corresponding usage levels.
 
 ```diff
+- import { loadAllArticlesFromDisk } from "./utils.js";
 + import { loadAllArticlesFromDisk, resetContractUsageLevels } from "./utils.js";
 + const USER_ID = "user-123";
 // ...
