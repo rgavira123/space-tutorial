@@ -433,7 +433,7 @@ export default function MainPage() {
 
 This will render the left-side advertisement only if the user’s current subscription configuration allows it —that is, when the `sideAds` feature evaluates to `true` in the active pricing token.
 
-> [!DANGER]  
+> [!IMPORTANT]  
 > In **Step 5**, we removed the old `ShowAdsContext` and switched to using the `SPACE` feature-based system.  
 > All logic related to `useShowAds`, `AdToggle`, and similar components should now be deleted.  
 > From this point onward, ads are fully controlled by the `<Feature>` component from **space-react-client**.  
