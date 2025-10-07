@@ -528,34 +528,6 @@ export default function Header() {
 
 To correctly associate feature evaluations with a specific user, the frontend must identify the active user and request their **Pricing Token** from SPACE.
 
-In `/src/pagesMainPage.tsx`, import `useEffect` and call `spaceClient.setUserId` when the component mounts:
-
-```diff
-+ import { useEffect } from "react";
-
-+ const spaceClient = useSpaceClient();
-
-+ useEffect(() => {
-+  spaceClient
-+    .setUserId("user-123")
-+    .then(() => console.log("User's pricing token set"))
-+    .catch(console.error);
-+
-+  // Listen for SPACE sync events
-+  const onSync = () =>
-+    console.log("Connected & synchronized with SPACE");
-+  spaceClient.on("synchronized", onSync);
-+
-+  return () => spaceClient.off("synchronized", onSync);
-+}, [spaceClient]);
-```
-
-This step corresponds to the **"Identify the user and load a Pricing Token"** phase described in the [SPACE React Client documentation](https://sphere-docs.vercel.app/docs/2.0.1/api/space/SDKs/Frontend%20SDKs/space-react-client).
-
-### Step 8 — Identify the User and Load a Pricing Token
-
-To correctly associate feature evaluations with a specific user, the frontend must identify the active user and request their **Pricing Token** from SPACE.
-
 In `src/pages/MainPage.tsx`, import `useEffect` and call `spaceClient.setUserId` **inside** the `MainPage` component as shown below:
 
 ```diff
@@ -691,12 +663,18 @@ In this section, we’ll use the SPACE suite to display feature usage levels dir
 
 To achieve this, we’ll access the payload of the active pricing token from the client’s `spaceClient`. As explained in the [documentation](https://sphere-docs.vercel.app/docs/2.0.1/api/space/introduction#-communication-strategy-overview), the `features` field contains both the current usage (`used`) and the corresponding limit (`limit`).  
 
-In `src/components/ArticleSection.tsx`, we’ll import the `usePricingTokenPayload` hook from `space-react-client`, which provides this payload and triggers a re-render whenever the token updates.
+In `src/components/ArticleSection.tsx`, import the `usePricingTokenPayload` hook from `space-react-client`, which provides this payload and triggers a re-render whenever the token updates:
 
 ```diff
++ import { usePricingTokenPayload } from "space-react-client";
 // ...
+export default function ArticleSection({
+  containerClassName,
+}: {
+  containerClassName?: string;
+}) {
 const [error, setError] = useState<string | null>(null);
-
+// ...
 + const tokenPayload = usePricingTokenPayload();
 const { fetchArticle } = useApi();
 
@@ -711,45 +689,56 @@ useEffect(() => {
 // ...
 ```
 
-Next, we’ll extract the usage level (`used`) and usage limit (`limit`) from the token payload. To do this, we’ll add the following lines right before the first useEffect:
+Next, extract the usage level (`used`) and usage limit (`limit`) from the token payload.  
+To do this, add the following lines right before the first `useEffect`:
 
 ```diff
-
 + const used =
-+    tokenPayload?.features?.["news-news"]?.used?.["news-maxNews"] ?? 0;
++   tokenPayload?.features?.["news-news"]?.used?.["news-maxNews"] ?? 0;
 + const limit =
-+    tokenPayload?.features?.["news-news"]?.limit?.["news-maxNews"] ?? 0;
++   tokenPayload?.features?.["news-news"]?.limit?.["news-maxNews"] ?? 0;
 
 useEffect(() => {...});
 ```
 
-With this, the only thing left is to design and render this information in the UI —for example, next to the button used to switch between articles:
+Finally, design and render this information in the UI — for example, next to the button used to switch between articles:
 
 ```diff
-<div className="flex justify-end mt-6">
-+  {tokenPayload && (
-+    <motion.div
-+      key={used}
-+      initial={{ opacity: 0, y: 4 }}
-+      animate={{ opacity: 1, y: 0 }}
-+      transition={{ duration: 0.2 }}
-+      className="mr-3 inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-indigo-50/80 px-3 py-1 text-xs font-medium text-indigo-700 shadow-sm"
-+      aria-label={`News used ${used} out of ${limit}`}>
-+      <FiFileText className="h-3.5 w-3.5" />
-+      <span>
-+        <span className="text-sm font-semibold">{used}</span>
-+        <span className="opacity-70">/{limit}</span>
-+      </span>
-+    </motion.div>
-+  )}
-  <motion.button
-    whileTap={{ scale: 0.97 }}
-    whileHover={{ scale: 1.02 }}
-    onClick={() => setCurrentIdx((i) => (i + 1) % 5)}
-    className="px-4 py-2 rounded-md bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium shadow-sm">
-    Load another article
-  </motion.button>
-</div>
++ import { FiFileText } from "react-icons/fi";
++
+export default function ArticleSection({
+  containerClassName,
+}: {
+  containerClassName?: string;
+}) {
+  // ...
+  return (
+    <div className="flex justify-end mt-6">
++     {tokenPayload && (
++       <motion.div
++         key={used}
++         initial={{ opacity: 0, y: 4 }}
++         animate={{ opacity: 1, y: 0 }}
++         transition={{ duration: 0.2 }}
++         className="mr-3 inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-indigo-50/80 px-3 py-1 text-xs font-medium text-indigo-700 shadow-sm"
++         aria-label={`News used ${used} out of ${limit}`}>
++         <FiFileText className="h-3.5 w-3.5" />
++         <span>
++           <span className="text-sm font-semibold">{used}</span>
++           <span className="opacity-70">/{limit}</span>
++         </span>
++       </motion.div>
++     )}
+      <motion.button
+        whileTap={{ scale: 0.97 }}
+        whileHover={{ scale: 1.02 }}
+        onClick={() => setCurrentIdx((i) => (i + 1) % 5)}
+        className="px-4 py-2 rounded-md bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium shadow-sm">
+        Load another article
+      </motion.button>
+    </div>
+  );
+}
 ```
 
 Now we have a counter that displays the number of articles read and the daily limit of available articles. All of this without needing to interact with the codebase except to configure SPACE.
@@ -764,7 +753,7 @@ To achieve this, we’ll add a server endpoint that triggers a novation to the l
 
 ### Backend
 
-Add an endpoint to update the subscription contractedService versions to the latest uploaded:
+Add an endpoint in the main server file to update the subscription contractedService versions to the latest uploaded:
 
 ```typescript
 app.put("/api/pricing", async (req: Request, res: Response) => {
@@ -818,7 +807,6 @@ Finally, we’ll add a listener in **MainPage.tsx** that waits for a `pricing_cr
 //...
 
 export default function MainPage() {
-+  const spaceClient = useSpaceClient();
 +  const { updateContractToLatestPricingVersion } = useApi();
 +  
 +  useEffect(() => {
