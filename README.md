@@ -552,6 +552,43 @@ In `/src/pagesMainPage.tsx`, import `useEffect` and call `spaceClient.setUserId`
 
 This step corresponds to the **"Identify the user and load a Pricing Token"** phase described in the [SPACE React Client documentation](https://sphere-docs.vercel.app/docs/2.0.1/api/space/SDKs/Frontend%20SDKs/space-react-client).
 
+### Step 8 — Identify the User and Load a Pricing Token
+
+To correctly associate feature evaluations with a specific user, the frontend must identify the active user and request their **Pricing Token** from SPACE.
+
+In `src/pages/MainPage.tsx`, import `useEffect` and call `spaceClient.setUserId` **inside** the `MainPage` component as shown below:
+
+```diff
+// ...
+import { Default, Feature, On, useSpaceClient } from "space-react-client";
++ import { useEffect } from "react";
+
+export default function MainPage() {
++  const spaceClient = useSpaceClient();
++
++  useEffect(() => {
++    spaceClient.setUserId('user-123')
++      .then(() => console.log("User's pricing token set"))
++      .catch(console.error);
++
++    // Listen for SPACE sync events
++    const onSync = () => console.log('Connected & synchronized with SPACE');
++    spaceClient.on('synchronized', onSync);
++
++    return () => spaceClient.off('synchronized', onSync);
++  }, [spaceClient]);
+  
+   return (
+     <div className="min-h-screen bg-gray-50">
+       {/* ... existing content ... */}
+     </div>
+   );
+ }
+```
+
+
+This step corresponds to the **"Identify the user and load a Pricing Token"** phase described in the [SPACE React Client documentation](https://sphere-docs.vercel.app/docs/2.0.1/api/space/SDKs/Frontend%20SDKs/space-react-client).
+
 ## 4. (Optional) Switching Subscription Plans
 
 This optional part of the laboratory adds a simple way to toggle between **BASIC** and **PREMIUM** plans.
@@ -584,7 +621,7 @@ app.put("/api/subscription", async (req, res) => {
 
 ### Frontend
 
-In `useApi.tsx`, add:
+In `/src/hooks/useApi.tsx`, add:
 
 ```diff
 export default function useApi() {
