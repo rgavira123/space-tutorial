@@ -30,7 +30,7 @@ This pricing serialized in `Pricing2Yaml` looks as follows:
 ```yaml
 saasName: News
 syntaxVersion: "3.0"
-version: "1.1"
+version: "1.0"
 createdAt: "2025-09-01"
 currency: EUR
 features:
