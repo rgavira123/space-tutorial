@@ -349,12 +349,12 @@ Replace the previous `/api/articles/:id` endpoint with the following implementat
 
 ### Step 5 — Frontend Integration (React)
 
+In the file `src/App.tsx`, replace the `<ShowAdsProvider>` provider with the **`<SpaceProvider>`** from `space-react-client`:
+
 > ⚠️ **API Key reminder:**  
 > If you launched your SPACE instance using **Docker**, the **API Key** is automatically generated.  
 > Open the **Access Control** tab in the SPACE dashboard, find your **admin** user, and copy its **API Key**.  
 > Then, paste that value into the `apiKey` field of the `spaceConfig` shown below.
-
-Replace the `<ShowAdsProvider>` provider with the **`<SpaceProvider>`** from `space-react-client`:
 
 ```diff
 - import { ShowAdsProvider } from "./context/showAdsContext";
