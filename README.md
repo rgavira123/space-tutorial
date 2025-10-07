@@ -108,13 +108,26 @@ In this section, you’ll connect the app to a SPACE instance and enable basic p
 
 To do so, follow this tutorial: [How to run a SPACE instance](https://sphere-docs.vercel.app/docs/2.0.1/api/space/user-guide/run-space-instance).
 
-Once your SPACE instance is up and running, open the **Services Management** tab in the SPACE dashboard and click **Add Service**.  
-Upload the YAML pricing file we defined earlier in this README (`News` pricing).  
-This will register the *News* service and make its pricing available for the integration steps that follow.
+Once your SPACE instance is up and running, create the **YAML pricing file** shown earlier in this guide (the `News` pricing example).  
+Save it locally — for example, as `news-pricing.yaml` — and then open the **Services Management** tab in the SPACE dashboard.  
+Click **Add Service**, upload this YAML file to register the *News* service.  
+This will make the pricing available for the integration steps that follow.
 
-> [!IMPORTANT]  
-> This laboratory uses **pnpm** to run both the backend and frontend concurrently.  
-> If you don’t have **pnpm** installed globally, run:
+### Step 1 — Install Dependencies
+
+First, install the required **SPACE SDKs** for both the frontend and backend:
+
+```bash
+npm install space-react-client space-node-client
+# or
+yarn add space-react-client space-node-client
+# or
+pnpm add space-react-client space-node-client
+```
+
+> ⚠️ **Important:**  
+> This laboratory uses **pnpm** to run both the backend and the frontend concurrently.  
+> If you don’t have it installed globally, run:
 > ```bash
 > npm install -g pnpm
 > ```
@@ -124,18 +137,12 @@ This will register the *News* service and make its pricing available for the int
 > ```
 > This command will launch the **Express API** and the **React frontend** together, allowing SPACE to interact with the mock application in real time.  
 >
-> ⚠️ **Note:** It’s normal for some parts of the application to fail or show errors until all configuration steps are completed.  
-> The lab is designed to work once everything is properly set up, so don’t worry if something doesn’t run correctly before finishing all the instructions.
+> 💡 **Note:** It’s normal for some parts of the application to fail or show temporary errors until all configuration steps are completed.  
+> The lab is designed to work *after* every step is fully set up, so don’t worry if something doesn’t run correctly before finishing all instructions.
 
-### Step 1 — Install Dependencies
 
-```bash
-npm install space-react-client space-node-client
-# or
-yarn add space-react-client space-node-client
-# or
-pnpm add space-react-client space-node-client
-```
+
+
 
 ### Step 2 — Backend Integration (Server)
 
